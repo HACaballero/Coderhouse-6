@@ -1,0 +1,76 @@
+<div class="container">
+  <h1>
+    Centro de Mensajerías
+  </h1>
+  <input type="text" placeholder="correo electrónigo" id="email" value="123" />
+  <div class="chat_container container">
+    <h4>
+      Chat
+    </h4>
+    <div id="chat">
+      {{#each mensajes}}
+        <div>
+          <span style="color: blue;">
+            {{email}}
+          </span>
+          [
+          <span style="color: brown;">
+            {{date}}
+          </span>
+          ]
+          <span style="color: green;">
+            {{mensaje}}
+          </span>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="form">
+    <input type="text" placeholder="mensaje" id="mensaje" />
+    <button class="btn btn-primary" id="enviar" onclick="enviar()">
+      Enviar
+    </button>
+  </div>
+</div>
+<script>
+  function enviar() {
+	let email = document.getElementById("email").value;
+
+	if( email) {
+	let mensaje = document.getElementById("mensaje").value;
+
+		let body = {
+			email,
+			mensaje,
+			
+		}
+	socket.emit("nuevo_mensaje",body);
+	} else {
+		window.alert("Necesita ingresar su correo")
+	}
+
+
+}
+	socket.on("mensajes", (data) => {
+		let chat = document.getElementById("chat").innerHTML;
+		let htmlBody = "";
+		for (item of data) {
+			htmlBody += `
+  <div>
+    <span style="color: blue;">
+      ${item.email}
+    </span>
+    [
+    <span style="color: brown;">
+      ${item.date}
+    </span>
+    ]
+    <span style="color: green;">
+      ${item.mensaje}
+    </span>
+  </div>
+  `;
+		}
+		document.getElementById("chat").innerHTML = htmlBody;
+	});
+</script>
